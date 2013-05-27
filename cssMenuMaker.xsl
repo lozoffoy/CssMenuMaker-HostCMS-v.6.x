@@ -47,7 +47,8 @@
 			<a href="{$link}">
 				<span><xsl:value-of disable-output-escaping="yes" select="name"/></span>
 			</a>
-
+			
+			<!-- Подузлы -->
 			<xsl:if test="$sub">
 				<ul>
 					<xsl:apply-templates select="$sub" />
