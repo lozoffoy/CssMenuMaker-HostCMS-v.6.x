@@ -6,11 +6,11 @@
 	exclude-result-prefixes="hostcms">
 	<xsl:output xmlns="http://www.w3.org/TR/xhtml1/strict" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" encoding="utf-8" indent="yes" method="html" omit-xml-declaration="no" version="1.0" media-type="text/xml"/>
 
-	<xsl:template match="/site">
+	<xsl:template match="/*">
 		<div id="cssmenu">
 			<ul>
 				<!-- Выбираем узлы структуры первого уровня -->
-				<xsl:apply-templates select="*[@id][show=1][active=1]" />
+				<xsl:apply-templates select="*[@id][active=1][show=1 or not(/site)]" />
 			</ul>
 		</div>
 	</xsl:template>
@@ -20,7 +20,7 @@
 
 	<xsl:template match="*">
 		<!-- Шаблон выборки дочерних узлов -->
-		<xsl:variable name="sub" select="*[@id][show=1][active=1]" />
+		<xsl:variable name="sub" select="*[@id][active=1][show=1 or not(/site)]" />
 
 		<li>
 			<xsl:attribute name="class">
@@ -47,9 +47,11 @@
 			<a href="{$link}">
 				<span><xsl:value-of disable-output-escaping="yes" select="name"/></span>
 			</a>
-			
-			<!-- Подузлы -->
-			<xsl:if test="$sub">
+
+			<!-- Максимальный уровень вложенности -->
+			<xsl:variable name="max_level" select="/*/max_level"/>
+
+			<xsl:if test="$sub and count(ancestor::*) &lt; $max_level or $max_level = 0">
 				<ul>
 					<xsl:apply-templates select="$sub" />
 				</ul>

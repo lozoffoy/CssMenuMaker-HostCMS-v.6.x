@@ -1,11 +1,19 @@
 <?php
-/* Базовые настройки показа меню */
+
+
+/**
+ На базе структуры сайта
+ */
+ 
+// Базовые настройки показа меню
 $iMenu = 1; // идентификатор меню
 $sXsl = 'CssMenuMaker'; // название XSL-шаблона
 $bShowInformationsystemGroups = TRUE; // показываем в меню группы инфосистемы (TRUE/FALSE)
 $bShowShopGroups = TRUE; // показываем в меню группы магазина (TRUE/FALSE)
+$iLevel = 3; // максимальный уровень вложенности меню (0 — если уровень вложенности не ограничен)
 
-/* Код показа */
+
+// Код на базе контроллера показа структуры сайта
 $Structure_Controller_Show = new Structure_Controller_Show(
 	Core_Entity::factory('Site', CURRENT_SITE));
 
@@ -13,6 +21,64 @@ $Structure_Controller_Show->xsl(Core_Entity::factory('Xsl')
 	->getByName($sXsl))
 	->showInformationsystemGroups($bShowInformationsystemGroups)
 	->showShopGroups($bShowShopGroups)
+	->addEntity(Core::factory('Core_Xml_Entity')
+		->name('max_level')
+		->value($iLevel)
+	)
 	->menu($iMenu)
 	->show();
-?>
+
+
+
+
+/**
+ На базе интернет-магазина
+ */
+
+// Базовые настройки показа меню
+$iShop = 2; // идентификатор интернет-магазна
+$sXsl = 'CssMenuMaker'; // название XSL-шаблона
+$iLevel = 0; // максимальный уровень вложенности меню (0 — если уровень вложенности не ограничен)
+
+
+// Код на базе контроллера показа интернет-магазина
+$Shop_Controller_Show = new Shop_Controller_Show(
+	Core_Entity::factory('Shop', $iShop));
+
+$Shop_Controller_Show
+	->xsl(Core_Entity::factory('Xsl')
+		->getByName($sXsl))
+	->addEntity(Core::factory('Core_Xml_Entity')
+		->name('max_level')
+		->value($iLevel))
+	->groupsMode('all')
+	->show();
+
+	
+
+
+/**
+ На базе информационной системы
+ */
+
+// Базовые настройки показа меню
+$iIS = 1; // идентификатор информационной системы
+$sXsl = 'CssMenuMaker'; // название XSL-шаблона
+$iLevel = 0; // максимальный уровень вложенности меню (0 — если уровень вложенности не ограничен)
+
+
+// Код на базе контроллера показа информационной системы
+$Informationsystem_Controller_Show = new Informationsystem_Controller_Show(
+	Core_Entity::factory('Informationsystem', $iIS)
+);
+
+$Informationsystem_Controller_Show
+	->xsl(Core_Entity::factory('Xsl')
+		->getByName($sXsl))
+	->addEntity(Core::factory('Core_Xml_Entity')
+		->name('max_level')
+		->value($iLevel))
+	->groupsMode('all')
+	->show();
+
+
